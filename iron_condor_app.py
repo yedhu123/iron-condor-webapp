@@ -3,15 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="BTC Iron Condor Payoff Calculator", layout="centered")
-st.title("\ud83d\udcc8 BTC Iron Condor Payoff Calculator")
+st.title("BTC Iron Condor Payoff Calculator")
 st.markdown("""
-Input your trade parameters below to visualize the **Iron Condor** options strategy.
+Input your trade parameters below to visualize the Iron Condor options strategy.
 The chart and key financial metrics will update based on your inputs.
 """)
 
 # === User Inputs ===
 with st.sidebar:
-    st.header("\ud83d\udcc9 Input Parameters")
+    st.header("Input Parameters")
     spot_price = st.number_input("Spot Price", value=107200)
     put_sell_strike = st.number_input("Put Sell Strike", value=102000)
     put_buy_strike = st.number_input("Put Buy Strike", value=100000)
@@ -56,8 +56,8 @@ ax.grid(True)
 st.pyplot(fig)
 
 # === Output Summary ===
-st.subheader("\ud83d\udcca Strategy Summary")
+st.subheader("Strategy Summary")
 st.write(f"**Net Credit Received:** ${total_credit:.2f}")
 st.write(f"**Maximum Loss:** ${max_loss:.2f}")
 st.write(f"**Break-even Range:** ${break_even_low:.2f} to ${break_even_high:.2f}")
-st.caption("Built with \u2764\ufe0f using Streamlit")
+st.caption("Built with love using Streamlit")
