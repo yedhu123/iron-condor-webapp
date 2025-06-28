@@ -12,7 +12,7 @@ import math
 try:
     from scipy.stats import norm
 except ModuleNotFoundError:
-    st.error("⚠️ The required module 'scipy' is not installed. Please run: pip install scipy")
+    st.error("\u26a0\ufe0f The required module 'scipy' is not installed. Please run: pip install scipy")
     st.stop()
 
 st.set_page_config(page_title="BTC Iron Condor Payoff Calculator", layout="wide")
