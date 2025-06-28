@@ -1,4 +1,4 @@
-# BTC Iron Condor Full Streamlit App with Greeks and Live Data
+# BTC Iron Condor Full Streamlit App with Greeks and Live Data + Fallback for scipy
 
 import streamlit as st
 import numpy as np
@@ -7,7 +7,13 @@ import requests
 import pandas as pd
 from datetime import datetime
 import math
-from scipy.stats import norm
+
+# === Safe import of scipy ===
+try:
+    from scipy.stats import norm
+except ModuleNotFoundError:
+    st.error("⚠️ The required module 'scipy' is not installed. Please run: pip install scipy")
+    st.stop()
 
 st.set_page_config(page_title="BTC Iron Condor Payoff Calculator", layout="wide")
 st.title("BTC Iron Condor Payoff Calculator")
@@ -59,12 +65,11 @@ def calculate_greeks(S, K, T, r, sigma, option_type):
         'Vega': round(vega / 100, 4)      # per 1% change in IV
     }
 
-# === UI Sidebar: Live Data ===
-st.sidebar.header("Live Option Chain")
+# === UI Sidebar ===
+st.sidebar.header("Iron Condor Setup")
 option_chain = fetch_deribit_option_chain()
 unique_expiries = option_chain['expiration'].dt.date.unique() if not option_chain.empty else []
-
-selected_expiry = st.sidebar.selectbox("Choose Expiry", unique_expiries) if unique_expiries.any() else None
+selected_expiry = st.sidebar.selectbox("Choose Expiry", unique_expiries) if len(unique_expiries) else None
 
 if selected_expiry:
     filtered_chain = option_chain[option_chain['expiration'].dt.date == selected_expiry]
@@ -74,9 +79,6 @@ else:
     filtered_chain = pd.DataFrame()
 
 live_price = fetch_live_btc_price()
-
-# === Auto-fill UI ===
-st.sidebar.header("Iron Condor Setup")
 strikes = sorted(filtered_chain['strike'].unique()) if not filtered_chain.empty else [100000, 102000, 112000, 114000]
 
 put_sell_strike = st.sidebar.selectbox("Put Sell Strike", strikes, index=1)
@@ -106,7 +108,7 @@ if selected_expiry:
     today = datetime.utcnow().date()
     days_to_expiry = (selected_expiry - today).days
 else:
-    days_to_expiry = 7  # fallback
+    days_to_expiry = 7
 
 # === Payoff Calculation ===
 def calculate_payoff(price):
